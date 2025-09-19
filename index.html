@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Solutions | Web Development, CRM & Telegram Bots</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            position: relative;
+            overflow: hidden;
+            height: 100vh;
+            perspective: 1px;
+            transform-style: preserve-3d;
+        }
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            will-change: transform;
+            z-index: -1;
+            transform: translateZ(-1px) scale(2);
+        }
+        .parallax-content {
+            transform: translateZ(0);
+        }
+        .parallax-section {
+            position: relative;
+            height: 100vh;
+            transform-style: preserve-3d;
+            overflow: hidden;
+        }
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        .layer-1 {
+            transform: translateZ(-2px) scale(3);
+            z-index: -2;
+        }
+        .layer-2 {
+            transform: translateZ(-1px) scale(2);
+            z-index: -1;
+        }
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .globe-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+        .content-overlay {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-800">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white shadow-md z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-blue-600">DigitalSolutions</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#services" class="text-gray-700 hover:text-blue-600 transition">Services</a>
+                    <a href="#work" class="text-gray-700 hover:text-blue-600 transition">Our Work</a>
+                    <a href="#about" class="text-gray-700 hover:text-blue-600 transition">About Us</a>
+                    <a href="#contact" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Contact</a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="menu-btn" class="text-gray-700">
+                        <i data-feather="menu"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden fixed inset-0 bg-white z-40 pt-20 px-4">
+        <div class="flex flex-col space-y-6 text-center">
+            <a href="#services" class="text-gray-700 text-lg py-2 border-b">Services</a>
+            <a href="#work" class="text-gray-700 text-lg py-2 border-b">Our Work</a>
+            <a href="#about" class="text-gray-700 text-lg py-2 border-b">About Us</a>
+            <a href="#contact" class="bg-blue-600 text-white px-4 py-3 rounded-md text-lg">Contact</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section flex items-center">
+        <div id="globe-bg" class="globe-bg"></div>
+        <div class="parallax-bg" style="background-image: url('http://static.photos/technology/1200x630/5');"></div>
+        <div class="parallax-content content-overlay max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6" data-aos="fade-up">
+                We Build Digital Solutions That Work
+            </h1>
+            <p class="text-xl md:text-2xl text-blue-100 mb-10 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                Expert developers crafting websites, CRM systems, and Telegram bots to solve your business challenges.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
+                <a href="#contact" class="bg-white text-blue-600 px-8 py-4 rounded-md font-medium hover:bg-gray-100 transition duration-300">
+                    Get Started
+                </a>
+                <a href="#services" class="border-2 border-white text-white px-8 py-4 rounded-md font-medium hover:bg-white hover:bg-opacity-10 transition duration-300">
+                    Our Services
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4" data-aos="fade-up">
+                    Our Expertise
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                    We specialize in creating digital solutions that drive results and solve real business problems.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Web Development -->
+                <div class="service-card bg-white p-8 rounded-xl shadow-md transition duration-300" data-aos="fade-up">
+                    <div class="text-blue-600 mb-6">
+                        <i data-feather="globe" class="w-12 h-12"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Web Development</h3>
+                    <p class="text-gray-600 mb-6">
+                        Custom websites that engage visitors and convert them into customers. Responsive, fast, and optimized for results.
+                    </p>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-start">
+                            <i data-feather="check" class="w-4 h-4 text-green-500 mr-2 mt-1"></i>
+                            <span>Custom CMS Solutions</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="w-4 h-4 text-green-500 mr-2 mt-1"></i>
+                            <span>E-commerce Platforms</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="w-4 h-4 text-green-500 mr-2 mt-1"></i>
+                            <span>Web Applications</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- CRM Systems -->
+                <div class="service-card bg-white p-8 rounded-xl shadow-md transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-blue-600 mb-6">
+                        <i data-feather="database" class="w-12 h-12"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">CRM Systems</h3>
+                    <p class="text-gray-600 mb-6">
+                        Tailored CRM solutions that streamline your business processes, improve customer relationships, and boost sales.
+                    </p>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-start">
+                            <i data-feather="check" class="w-4 h-4 text-green-500 mr-2 mt-1"></i>
+                            <span>Custom CRM Development</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="w-4 h-4 text-green-500 mr-2 mt-1"></i>
+                            <span>Sales Automation</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="w-4 h-4 text-green-500 mr-2 mt-1"></i>
+                            <span>Integration with Existing Systems</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Telegram Bots -->
+                <div class="service-card bg-white p-8 rounded-xl shadow-md transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-blue-600 mb-6">
+                        <i data-feather="send" class="w-12 h-12"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Telegram Bots</h3>
+                    <p class="text-gray-600 mb-6">
+                        Intelligent bots that automate customer service, notifications, and business processes on Telegram.
+                    </p>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-start">
+                            <i data-feather="check" class="w-4 h-4 text-green-500 mr-2 mt-1"></i>
+                            <span>Customer Support Bots</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="w-4 h-4 text-green-500 mr-2 mt-1"></i>
+                            <span>Notification Systems</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="w-4 h-4 text-green-500 mr-2 mt-1"></i>
+                            <span>Payment Processing</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Work Section -->
+    <section id="work" class="parallax-section py-20 bg-white relative">
+        <div class="parallax-layer layer-1" style="background-image: url('http://static.photos/abstract/1200x630/6'); opacity: 0.05;"></div>
+        <div class="parallax-layer layer-2" style="background-image: url('http://static.photos/abstract/1200x630/7'); opacity: 0.1;"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="position: relative; z-index: 1;">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4" data-aos="fade-up">
+                    Our Work
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                    See how we've helped businesses like yours achieve their digital goals.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="rounded-xl overflow-hidden shadow-lg" data-aos="fade-up">
+                    <img src="http://static.photos/technology/640x360/1" alt="E-commerce Platform" class="w-full h-48 object-cover">
+                    <div class="p-6 bg-white">
+                        <h3 class="text-xl font-bold mb-2">E-commerce Platform</h3>
+                        <p class="text-gray-600 mb-4">Custom online store with integrated payment processing and inventory management.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">Web Development</span>
+                            <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">E-commerce</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="rounded-xl overflow-hidden shadow-lg" data-aos="fade-up" data-aos-delay="100">
+                    <img src="http://static.photos/office/640x360/2" alt="CRM System" class="w-full h-48 object-cover">
+                    <div class="p-6 bg-white">
+                        <h3 class="text-xl font-bold mb-2">Sales CRM</h3>
+                        <p class="text-gray-600 mb-4">Custom CRM solution with lead tracking and sales automation for a real estate company.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">CRM</span>
+                            <span class="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full">Automation</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="rounded-xl overflow-hidden shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                    <img src="http://static.photos/technology/640x360/3" alt="Telegram Bot" class="w-full h-48 object-cover">
+                    <div class="p-6 bg-white">
+                        <h3 class="text-xl font-bold mb-2">Customer Support Bot</h3>
+                        <p class="text-gray-600 mb-4">AI-powered Telegram bot handling customer inquiries 24/7 for an online service.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">Telegram</span>
+                            <span class="bg-red-100 text-red-800 text-xs px-3 py-1 rounded-full">AI</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="parallax-section py-20 bg-gray-50 relative">
+        <div class="parallax-layer layer-1" style="background-image: url('http://static.photos/minimal/1200x630/7'); opacity: 0.05;"></div>
+        <div class="parallax-layer layer-2" style="background-image: url('http://static.photos/minimal/1200x630/8'); opacity: 0.1;"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="position: relative; z-index: 1;">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div data-aos="fade-right">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Who We Are</h2>
+                    <p class="text-lg text-gray-600 mb-6">
+                        We're a team of passionate developers dedicated to creating digital solutions that solve real business problems. With years of experience across web development, CRM systems, and Telegram bots, we bring technical expertise and creative problem-solving to every project.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-8">
+                        Our approach is simple: understand your needs, design the right solution, and deliver exceptional results that drive your business forward.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex items-center">
+                            <i data-feather="check-circle" class="w-5 h-5 text-green-500 mr-2"></i>
+                            <span class="font-medium">Experienced Team</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i data-feather="check-circle" class="w-5 h-5 text-green-500 mr-2"></i>
+                            <span class="font-medium">Client-Focused</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i data-feather="check-circle" class="w-5 h-5 text-green-500 mr-2"></i>
+                            <span class="font-medium">Quality Code</span>
+                        </div>
+                    </div>
+                </div>
+                <div data-aos="fade-left">
+                    <img src="http://static.photos/office/640x360/4" alt="Our Team" class="rounded-xl shadow-lg w-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="parallax-section py-20 bg-blue-600 text-white relative">
+        <div class="parallax-layer layer-1" style="background-image: url('http://static.photos/blue/1200x630/8'); opacity: 0.1;"></div>
+        <div class="parallax-layer layer-2" style="background-image: url('http://static.photos/blue/1200x630/9'); opacity: 0.15;"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="position: relative; z-index: 1;">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div data-aos="fade-right">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Start Your Project?</h2>
+                    <p class="text-xl mb-8 text-blue-100">
+                        Let's discuss how we can help solve your business challenges with our digital solutions.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <i data-feather="mail" class="w-5 h-5 mr-4 mt-1"></i>
+                            <span>contact@digitalsolutions.com</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-feather="phone" class="w-5 h-5 mr-4 mt-1"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-feather="map-pin" class="w-5 h-5 mr-4 mt-1"></i>
+                            <span>123 Tech Street, Digital City</span>
+                        </div>
+                    </div>
+                </div>
+                <div data-aos="fade-left">
+                    <form class="bg-white p-8 rounded-xl shadow-lg text-gray-800">
+                        <div class="mb-6">
+                            <label for="name" class="block text-gray-700 font-medium mb-2">Your Name</label>
+                            <input type="text" id="name" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="mb-6">
+                            <label for="email" class="block text-gray-700 font-medium mb-2">Email Address</label>
+                            <input type="email" id="email" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-700 font-medium mb-2">How Can We Help?</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 transition duration-300 font-medium">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">DigitalSolutions</h3>
+                    <p class="text-gray-400">
+                        Creating digital solutions that solve business challenges through expert development.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Web Development</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">CRM Systems</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Telegram Bots</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition">About Us</a></li>
+                        <li><a href="#work" class="text-gray-400 hover:text-white transition">Our Work</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Connect</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i data-feather="twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i data-feather="linkedin"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i data-feather="github"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i data-feather="telegram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 DigitalSolutions. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize animations
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Initialize feather icons
+        feather.replace();
+
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking on a link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Initialize Three.js scene
+        function initThreeJS() {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('globe-bg').appendChild(renderer.domElement);
+
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0x404040);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+
+            // Add floating tech elements
+            const geometry = new THREE.IcosahedronGeometry(1, 0);
+            const material = new THREE.MeshPhongMaterial({ 
+                color: 0x3b82f6,
+                emissive: 0x1e3a8a,
+                specular: 0x111111,
+                shininess: 30,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            const techElements = [];
+            for (let i = 0; i < 15; i++) {
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.x = (Math.random() - 0.5) * 20;
+                mesh.position.y = (Math.random() - 0.5) * 20;
+                mesh.position.z = (Math.random() - 0.5) * 20;
+                mesh.scale.setScalar(Math.random() * 0.5 + 0.3);
+                scene.add(mesh);
+                techElements.push(mesh);
+            }
+
+            camera.position.z = 15;
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                techElements.forEach((element, index) => {
+                    element.rotation.x += 0.005;
+                    element.rotation.y += 0.01;
+                    element.position.y += Math.sin(Date.now() * 0.001 + index) * 0.002;
+                });
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // Enhanced parallax effects
+        document.addEventListener('scroll', () => {
+            const scrollPosition = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.parallax-bg, .parallax-layer');
+            
+            parallaxElements.forEach(element => {
+                const speed = element.classList.contains('layer-1') ? 0.2 : 
+                            element.classList.contains('layer-2') ? 0.4 : 0.6;
+                const yPos = -scrollPosition * speed;
+                element.style.transform = `translate3d(0, ${yPos}px, 0)`;
+            });
+
+            // Hero section parallax
+            const heroSection = document.querySelector('.hero-section');
+            const heroContent = document.querySelector('.parallax-content');
+            const heroScroll = scrollPosition / heroSection.offsetHeight;
+            
+            if (heroScroll < 1) {
+                heroContent.style.transform = `translateY(${scrollPosition * 0.5}px)`;
+                heroContent.style.opacity = 1 - heroScroll * 1.5;
+            }
+        });
+
+        // Initialize Three.js if available
+        if (typeof THREE === 'undefined') {
+            console.error('Three.js is not loaded');
+            // Fallback to Vanta.js
+            VANTA.GLOBE({
+                el: "#globe-bg",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00,
+                color: 0x3b82f6,
+                backgroundColor: 0x1e3a8a,
+                size: 0.8
+            });
+        } else {
+            initThreeJS();
+        }
+    </script>
+</body>
+</html>
