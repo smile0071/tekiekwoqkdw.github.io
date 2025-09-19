@@ -86,7 +86,7 @@
 <body class="font-sans antialiased text-gray-800">
     <!-- Navigation -->
     <nav class="fixed w-full bg-white shadow-md z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="position: relative; z-index: 1;" data-aos="fade-up">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <span class="text-xl font-bold text-blue-600">DigitalSolutions</span>
@@ -139,7 +139,9 @@
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="py-20 bg-gray-50">
+    <section id="services" class="parallax-section py-20 bg-gray-50 relative">
+        <div class="parallax-layer layer-1" style="background-image: url('http://static.photos/abstract/1200x630/10'); opacity: 0.05;"></div>
+        <div class="parallax-layer layer-2" style="background-image: url('http://static.photos/abstract/1200x630/11'); opacity: 0.1;"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4" data-aos="fade-up">
@@ -233,7 +235,7 @@
     <section id="work" class="parallax-section py-20 bg-white relative">
         <div class="parallax-layer layer-1" style="background-image: url('http://static.photos/abstract/1200x630/6'); opacity: 0.05;"></div>
         <div class="parallax-layer layer-2" style="background-image: url('http://static.photos/abstract/1200x630/7'); opacity: 0.1;"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="position: relative; z-index: 1;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="position: relative; z-index: 1;" data-aos="fade-up">
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4" data-aos="fade-up">
                     Our Work
@@ -287,10 +289,10 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="parallax-section py-20 bg-gray-50 relative">
+    <section id="about" class="parallax-section py-20 bg-gray-100 relative">
         <div class="parallax-layer layer-1" style="background-image: url('http://static.photos/minimal/1200x630/7'); opacity: 0.05;"></div>
         <div class="parallax-layer layer-2" style="background-image: url('http://static.photos/minimal/1200x630/8'); opacity: 0.1;"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="position: relative; z-index: 1;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="position: relative; z-index: 1;" data-aos="fade-up">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div data-aos="fade-right">
                     <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Who We Are</h2>
@@ -326,7 +328,7 @@
     <section id="contact" class="parallax-section py-20 bg-blue-600 text-white relative">
         <div class="parallax-layer layer-1" style="background-image: url('http://static.photos/blue/1200x630/8'); opacity: 0.1;"></div>
         <div class="parallax-layer layer-2" style="background-image: url('http://static.photos/blue/1200x630/9'); opacity: 0.15;"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="position: relative; z-index: 1;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="position: relative; z-index: 1;" data-aos="fade-up">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div data-aos="fade-right">
                     <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Start Your Project?</h2>
@@ -519,6 +521,21 @@
                             element.classList.contains('layer-2') ? 0.4 : 0.6;
                 const yPos = -scrollPosition * speed;
                 element.style.transform = `translate3d(0, ${yPos}px, 0)`;
+            });
+
+            // Section parallax effects
+            document.querySelectorAll('.parallax-section').forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionScroll = (scrollPosition - sectionTop + window.innerHeight) / (sectionHeight + window.innerHeight);
+                
+                if (sectionScroll > 0 && sectionScroll < 1) {
+                    const content = section.querySelector('[style*="position: relative; z-index: 1;"]');
+                    if (content) {
+                        content.style.transform = `translateY(${sectionScroll * 50}px)`;
+                        content.style.opacity = 1 - sectionScroll * 0.5;
+                    }
+                }
             });
 
             // Hero section parallax
