@@ -82,6 +82,29 @@
             z-index: 1;
         }
     </style>
+    <style>
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: rgba(59, 130, 246, 0.5);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.2s ease;
+            mix-blend-mode: multiply;
+        }
+        
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .service-card {
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+    </style>
 </head>
 <body class="font-sans antialiased text-gray-800">
     <!-- Navigation -->
@@ -138,11 +161,25 @@
         </div>
     </section>
 
-    <!-- Services Section -->
+    <!-- Interactive Services Section -->
     <section id="services" class="parallax-section py-20 bg-gray-50 relative">
         <div class="parallax-layer layer-1" style="background-image: url('http://static.photos/abstract/1200x630/10'); opacity: 0.05;"></div>
         <div class="parallax-layer layer-2" style="background-image: url('http://static.photos/abstract/1200x630/11'); opacity: 0.1;"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Interactive Tabs -->
+            <div class="flex justify-center mb-12">
+                <div class="inline-flex rounded-md shadow-sm" role="group">
+                    <button type="button" data-tab="web" class="tab-btn px-6 py-3 text-sm font-medium rounded-l-lg bg-blue-600 text-white">
+                        Web Development
+                    </button>
+                    <button type="button" data-tab="crm" class="tab-btn px-6 py-3 text-sm font-medium bg-gray-200 hover:bg-gray-300">
+                        CRM Systems
+                    </button>
+                    <button type="button" data-tab="bots" class="tab-btn px-6 py-3 text-sm font-medium rounded-r-lg bg-gray-200 hover:bg-gray-300">
+                        Telegram Bots
+                    </button>
+                </div>
+            </div>
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4" data-aos="fade-up">
                     Our Expertise
@@ -152,9 +189,10 @@
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Web Development -->
-                <div class="service-card bg-white p-8 rounded-xl shadow-md transition duration-300" data-aos="fade-up">
+            <div class="tab-content">
+                <!-- Web Development Tab -->
+                <div id="web-tab" class="tab-pane active grid md:grid-cols-3 gap-8">
+                    <div class="service-card bg-white p-8 rounded-xl shadow-md transition duration-300" data-aos="fade-up">
                     <div class="text-blue-600 mb-6">
                         <i data-feather="globe" class="w-12 h-12"></i>
                     </div>
@@ -178,8 +216,9 @@
                     </ul>
                 </div>
 
-                <!-- CRM Systems -->
-                <div class="service-card bg-white p-8 rounded-xl shadow-md transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                <!-- CRM Systems Tab -->
+                <div id="crm-tab" class="tab-pane hidden grid md:grid-cols-3 gap-8">
+                    <div class="service-card bg-white p-8 rounded-xl shadow-md transition duration-300" data-aos="fade-up" data-aos-delay="100">
                     <div class="text-blue-600 mb-6">
                         <i data-feather="database" class="w-12 h-12"></i>
                     </div>
@@ -203,8 +242,9 @@
                     </ul>
                 </div>
 
-                <!-- Telegram Bots -->
-                <div class="service-card bg-white p-8 rounded-xl shadow-md transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                <!-- Telegram Bots Tab -->
+                <div id="bots-tab" class="tab-pane hidden grid md:grid-cols-3 gap-8">
+                    <div class="service-card bg-white p-8 rounded-xl shadow-md transition duration-300" data-aos="fade-up" data-aos-delay="200">
                     <div class="text-blue-600 mb-6">
                         <i data-feather="send" class="w-12 h-12"></i>
                     </div>
@@ -373,6 +413,65 @@
         </div>
     </section>
 
+    <!-- Business Mini-Game -->
+    <section id="game" class="py-20 bg-gray-50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Business Challenge</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Test your business skills with our interactive simulation</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-xl p-8 max-w-3xl mx-auto">
+                <div class="game-container mb-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold">Quarter: <span id="quarter">1</span></h3>
+                            <h3 class="text-lg font-semibold">Balance: $<span id="balance">10000</span></h3>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold">Customers: <span id="customers">100</span></h3>
+                            <h3 class="text-lg font-semibold">Satisfaction: <span id="satisfaction">70</span>%</h3>
+                        </div>
+                    </div>
+
+                    <div class="progress-container mb-6">
+                        <div class="h-4 bg-gray-200 rounded-full overflow-hidden">
+                            <div id="progress-bar" class="h-full bg-blue-600 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div id="scenario" class="mb-8 p-6 bg-gray-100 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">Welcome to your digital agency!</h3>
+                        <p>You have $10,000 and 100 customers. Make strategic decisions each quarter to grow your business.</p>
+                    </div>
+
+                    <div id="options" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button class="option-btn bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 transition" data-impact='{"balance":2000,"customers":30,"satisfaction":10}'>
+                            Invest in Marketing (+$2k, +30 customers, +10% satisfaction)
+                        </button>
+                        <button class="option-btn bg-green-600 text-white px-6 py-4 rounded-lg hover:bg-green-700 transition" data-impact='{"balance":-3000,"customers":50,"satisfaction":20}'>
+                            Improve Product (-$3k, +50 customers, +20% satisfaction)
+                        </button>
+                        <button class="option-btn bg-purple-600 text-white px-6 py-4 rounded-lg hover:bg-purple-700 transition" data-impact='{"balance":-5000,"customers":-20,"satisfaction":40}'>
+                            Train Team (-$5k, -20 customers, +40% satisfaction)
+                        </button>
+                        <button class="option-btn bg-yellow-600 text-white px-6 py-4 rounded-lg hover:bg-yellow-700 transition" data-impact='{"balance":4000,"customers":-30,"satisfaction":-15}'>
+                            Raise Prices (+$4k, -30 customers, -15% satisfaction)
+                        </button>
+                    </div>
+                </div>
+
+                <div id="result" class="hidden text-center p-6 bg-blue-100 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-4">Game Over!</h3>
+                    <p id="final-score" class="text-xl mb-4">Your final score: <span class="font-bold">0</span></p>
+                    <button id="restart-btn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+                        Play Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -424,6 +523,124 @@
     </footer>
 
     <script>
+        // Business Game Logic
+        let gameState = {
+            quarter: 1,
+            balance: 10000,
+            customers: 100,
+            satisfaction: 70,
+            maxQuarters: 8
+        };
+
+        const updateGameUI = () => {
+            document.getElementById('quarter').textContent = gameState.quarter;
+            document.getElementById('balance').textContent = gameState.balance;
+            document.getElementById('customers').textContent = gameState.customers;
+            document.getElementById('satisfaction').textContent = gameState.satisfaction;
+            
+            const progressPercent = (gameState.quarter / gameState.maxQuarters) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+        };
+
+        const checkGameOver = () => {
+            if (gameState.quarter > gameState.maxQuarters || 
+                gameState.balance <= 0 || 
+                gameState.customers <= 0 || 
+                gameState.satisfaction <= 0) {
+                
+                const score = gameState.balance + (gameState.customers * 100) + (gameState.satisfaction * 50);
+                document.getElementById('final-score').innerHTML = `Your final score: <span class="font-bold">${score}</span>`;
+                
+                document.querySelector('.game-container').classList.add('hidden');
+                document.getElementById('result').classList.remove('hidden');
+                return true;
+            }
+            return false;
+        };
+
+        const makeDecision = (impact) => {
+            gameState.balance += impact.balance;
+            gameState.customers += impact.customers;
+            gameState.satisfaction += impact.satisfaction;
+            
+            // Ensure values stay within bounds
+            gameState.balance = Math.max(0, gameState.balance);
+            gameState.customers = Math.max(0, gameState.customers);
+            gameState.satisfaction = Math.max(0, Math.min(100, gameState.satisfaction));
+            
+            gameState.quarter++;
+            updateGameUI();
+            
+            // Update scenario text
+            const scenarios = [
+                "Your marketing campaign brought in new clients!",
+                "Product improvements increased customer satisfaction.",
+                "Team training improved service quality but reduced short-term capacity.",
+                "Price changes affected your customer base."
+            ];
+            document.getElementById('scenario').innerHTML = 
+                `<h3 class="text-xl font-bold mb-4">Quarter ${gameState.quarter-1} Results</h3>
+                 <p>${scenarios[Math.floor(Math.random() * scenarios.length)]}</p>`;
+            
+            if (!checkGameOver() && gameState.quarter > gameState.maxQuarters) {
+                const score = gameState.balance + (gameState.customers * 100) + (gameState.satisfaction * 50);
+                document.getElementById('final-score').innerHTML = `Congratulations! You completed all quarters with a score of <span class="font-bold">${score}</span>`;
+                document.querySelector('.game-container').classList.add('hidden');
+                document.getElementById('result').classList.remove('hidden');
+            }
+        };
+
+        const resetGame = () => {
+            gameState = {
+                quarter: 1,
+                balance: 10000,
+                customers: 100,
+                satisfaction: 70,
+                maxQuarters: 8
+            };
+            updateGameUI();
+            document.getElementById('scenario').innerHTML = 
+                `<h3 class="text-xl font-bold mb-4">Welcome to your digital agency!</h3>
+                 <p>You have $10,000 and 100 customers. Make strategic decisions each quarter to grow your business.</p>`;
+            document.querySelector('.game-container').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+        };
+
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', () => {
+            updateGameUI();
+            
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const impact = JSON.parse(this.getAttribute('data-impact'));
+                    makeDecision(impact);
+                });
+            });
+            
+            document.getElementById('restart-btn').addEventListener('click', resetGame);
+        });
+
+        // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active classes
+                tabButtons.forEach(btn => btn.classList.remove('bg-blue-600', 'text-white'));
+                tabButtons.forEach(btn => btn.classList.add('bg-gray-200', 'hover:bg-gray-300'));
+                tabPanes.forEach(pane => pane.classList.add('hidden'));
+                
+                // Add active class to clicked button
+                button.classList.remove('bg-gray-200', 'hover:bg-gray-300');
+                button.classList.add('bg-blue-600', 'text-white');
+                
+                // Show corresponding pane
+                const tabId = button.getAttribute('data-tab') + '-tab';
+                document.getElementById(tabId).classList.remove('hidden');
+            });
+        });
+
         // Initialize animations
         AOS.init({
             duration: 800,
@@ -446,6 +663,29 @@
         mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
                 mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Interactive floating elements
+        const floatingElements = document.querySelectorAll('.service-card');
+        floatingElements.forEach(element => {
+            element.addEventListener('mousemove', (e) => {
+                const x = e.clientX - element.getBoundingClientRect().left;
+                const y = e.clientY - element.getBoundingClientRect().top;
+                
+                const centerX = element.offsetWidth / 2;
+                const centerY = element.offsetHeight / 2;
+                
+                const moveX = (x - centerX) / 20;
+                const moveY = (y - centerY) / 20;
+                
+                element.style.transform = `translateY(-10px) rotateX(${moveY}deg) rotateY(${moveX}deg)`;
+                element.style.boxShadow = `${-moveX * 2}px ${moveY * 2}px 25px -5px rgba(0, 0, 0, 0.1)`;
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                element.style.transform = 'translateY(-10px)';
+                element.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
             });
         });
 
@@ -510,6 +750,24 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
             });
         }
+
+        // Interactive cursor effects
+        const cursor = document.createElement('div');
+        cursor.classList.add('cursor');
+        document.body.appendChild(cursor);
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            // Scale up when hovering interactive elements
+            const interactiveElements = document.querySelectorAll('a, button, .service-card, input, textarea');
+            const isHovering = Array.from(interactiveElements).some(el => el.contains(e.target));
+            
+            cursor.style.transform = isHovering 
+                ? 'translate(-50%, -50%) scale(2)' 
+                : 'translate(-50%, -50%) scale(1)';
+        });
 
         // Enhanced parallax effects
         document.addEventListener('scroll', () => {
